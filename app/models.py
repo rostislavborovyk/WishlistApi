@@ -1,7 +1,23 @@
 from app import db
+from typing import Optional
 
 
-class User(db.Model):
+class AddMixin:
+    @classmethod
+    def add(cls, db_object: db.Model) -> None:
+        db.session.add(db_object)
+        db.session.commit()
+
+
+class DeleteByIdMixin:
+    @classmethod
+    def delete_by_id(cls, id_: str) -> None:
+        if obj := cls.query.filter_by(id=id_).first():
+            db.session.delete(obj)
+            db.session.commit()
+
+
+class User(AddMixin, DeleteByIdMixin, db.Model):
     __tablename__ = "users"
 
     # id type is String because it uses google user id returned from authorization which
@@ -9,6 +25,10 @@ class User(db.Model):
     id = db.Column(db.String(32), primary_key=True)
     name = db.Column(db.String(60))
     email = db.Column(db.String(60))
+
+    @classmethod
+    def find_by_id(cls, id_: str) -> Optional[db.Model]:
+        return cls.query.filter_by(id=id_).first()
 
 
 class Wishlist(db.Model):
