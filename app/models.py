@@ -25,34 +25,29 @@ class User(AddMixin, DeleteByIdMixin, db.Model):
     id = db.Column(db.String(32), primary_key=True)
     name = db.Column(db.String(60))
     email = db.Column(db.String(60))
+    wishlists = db.relationship("Wishlist", backref="user", lazy="joined")
 
     @classmethod
     def find_by_id(cls, id_: str) -> Optional[db.Model]:
         return cls.query.filter_by(id=id_).first()
 
 
-class Wishlist(db.Model):
+class Wishlist(AddMixin, DeleteByIdMixin, db.Model):
     __tablename__ = "wishlists"
 
     # id is generated from uuid4
     id = db.Column(db.String(32), primary_key=True)
+    name = db.Column(db.String(60))
     add_date = db.Column(db.Date)
+    user_id = db.Column(db.String(32), db.ForeignKey("users.id"))
+    items = db.relationship("WishlistItem", backref="wishlist", lazy="joined")
 
 
-class UserWishlist(db.Model):
-    __tablename__ = "user_wishlist"
-
-    # id is generated from uuid4
-    id = db.Column(db.String(32), primary_key=True)
-    user_id = db.Column(db.String(32), db.ForeignKey("users.id"), nullable=False)
-    wishlists_id = db.Column(db.String(32), db.ForeignKey("wishlists.id"), nullable=False)
-
-
-class WishlistItem(db.Model):
+class WishlistItem(AddMixin, db.Model):
     __tablename__ = "wishlist_items"
 
     # id is generated from uuid4
     id = db.Column(db.String(32), primary_key=True)
     text = db.Column(db.String(200))
     is_reserved = db.Column(db.Boolean, default=False)
-    wishlists_id = db.Column(db.String(32), db.ForeignKey("wishlists.id"), nullable=False)
+    wishlists_id = db.Column(db.String(32), db.ForeignKey("wishlists.id"))

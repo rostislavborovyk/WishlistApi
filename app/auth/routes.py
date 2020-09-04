@@ -2,13 +2,20 @@ from flask import session, redirect, url_for
 
 from app.auth import bp, oauth
 from app.models import User
+from app.auth.decorators import login_required
 
 
-@bp.route("/")
+@bp.route("/status")
 def hello():
-    email = dict(session).get("email")
+    if email := dict(session).get("email"):
+        return f"Logged in with {email}"
+    return "Not logged in"
 
-    return f"Ok, {email}"
+
+@bp.route("/protected")
+@login_required
+def protected(**kwargs):
+    return f"Ok"
 
 
 @bp.route('/login')
@@ -34,11 +41,11 @@ def authorize():
     if not User.find_by_id(user_info["id"]):
         User.add(User(id=user_info["id"], name=user_info["name"], email=user_info["email"]))
 
-    return redirect('/auth')
+    return redirect('/auth/status')
 
 
 @bp.route("/logout")
 def logout():
     for key in list(session.keys()):
         session.pop(key)
-    return redirect("/auth")
+    return redirect("/auth/status")
