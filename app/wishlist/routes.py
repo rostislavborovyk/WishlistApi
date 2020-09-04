@@ -7,10 +7,11 @@ from werkzeug.exceptions import BadRequest
 from flask_restx import Resource
 
 from app.wishlist import ns
+from app.models import *
 
 
 @ns.route('/wishlist')
-class Timeline(Resource):
+class Wishlist(Resource):
 
     @ns.doc("Wishlist endpoint")
     def get(self, **kwargs):
