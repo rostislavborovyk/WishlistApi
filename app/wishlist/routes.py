@@ -13,16 +13,16 @@ from app.auth.decorators import login_required
 from app.wishlist.marshal_models import (
     wishlists_get_marshal_model,
     wishlist_get_marshal_model,
+    wishlist_items_get_marshal_model,
 )
-from app.wishlist.post_models import wishlist_post_args
-from app.wishlist.argument_parsers import wishlist_parser
-from app.models import Wishlist, User, UserWishlistAssociation, db
+from app.wishlist.post_models import wishlist_post_args, wishlist_item_post_args
+from app.wishlist.argument_parsers import wishlist_parser, wishlist_item_id_parser, wishlist_item_args_parser
+from app.models import Wishlist, User, UserWishlistAssociation, WishlistItem, db
 from app.wishlist.dto import WishListDto, WishlistItemDto
 
 
 @ns.route('/wishlist')
 class WishlistListResource(Resource):
-
     @login_required
     @marshal_with(wishlists_get_marshal_model)
     def get(self, **kwargs):
@@ -45,7 +45,7 @@ class WishlistListResource(Resource):
                         item.id,
                         item.text,
                         item.is_reserved,
-                        item.wishlists_id,
+                        item.wishlist_id,
                     )
                     for item in wishlist.wishlist.items
                 ]
@@ -62,8 +62,6 @@ class WishlistListResource(Resource):
         Adds wishlist to current user's collection
         """
 
-        wishlist_id_ = uuid4().hex
-
         # getting arguments from request body
         args = wishlist_parser.parse_args()
         if not args.get("name"):
@@ -73,7 +71,7 @@ class WishlistListResource(Resource):
         user = User.find_by_id(kwargs["user_id"])
         a = UserWishlistAssociation()
         a.wishlist = Wishlist(
-            id=wishlist_id_,
+            id=uuid4().hex,
             name=args.get("name"),
             add_date=date.today(),
         )
@@ -94,21 +92,20 @@ class WishlistResource(Resource):
         Returns wishlist with specified id
         """
 
-        wishlist_obj = Wishlist.query.filter_by(id=id_).first_or_404()
-
+        wishlist = Wishlist.query.filter_by(id=id_).first_or_404()
         wishlist_response = WishListDto(
-            wishlist_obj.id,
-            wishlist_obj.name,
-            wishlist_obj.add_date,
-            [user.user.id for user in wishlist_obj.users],  # returns ids of all users that have this wishlist
+            wishlist.id,
+            wishlist.name,
+            wishlist.add_date,
+            [user.user.id for user in wishlist.users],  # returns ids of all users that have this wishlist
             [
                 WishlistItemDto(
                     item.id,
                     item.text,
                     item.is_reserved,
-                    item.wishlists_id,
+                    item.wishlist_id,
                 )
-                for item in wishlist_obj.items
+                for item in wishlist.items
             ]
         )
 
@@ -138,5 +135,73 @@ class WishlistResource(Resource):
         return None, 204
 
     @login_required
+    @ns.response(404, "Wishlist not found")
+    @ns.response(200, "Wishlist updated")
+    @ns.expect(wishlist_post_args)
     def put(self, id_, **kwargs):
-        pass
+        wishlist = Wishlist.query.filter_by(id=id_).first_or_404()
+
+        args = wishlist_parser.parse_args()
+        if not args.get("name"):
+            raise BadRequest("name argument is required")
+        wishlist.name = args.get("name")
+        db.session.commit()
+        return None, 200
+
+
+@ns.route('/wishlist_item')
+class WishlistItemListResource(Resource):
+
+    @login_required
+    @ns.response(404, "Wishlist not found")
+    @ns.expect(wishlist_item_id_parser)
+    @marshal_with(wishlist_items_get_marshal_model)
+    def get(self, **kwargs):
+        """
+        Returns all items in wishlist with specified id
+        """
+        # getting arguments from request body
+        wishlist_id_args = wishlist_item_id_parser.parse_args()
+        if not wishlist_id_args.get("wishlist_id"):
+            raise BadRequest("wishlist_id argument is required")
+
+        wishlist = Wishlist.query.filter_by(id=wishlist_id_args.get("wishlist_id")).first_or_404()
+
+        resp_items = [
+            WishlistItemDto(
+                item.id,
+                item.text,
+                item.is_reserved,
+                item.wishlist_id,
+            )
+            for item in wishlist.items
+        ]
+        return {"wishlist_items": resp_items}
+
+    @login_required
+    @ns.response(201, "Wishlist item successfully added")
+    @ns.response(404, "Wishlist not found")
+    @ns.expect(wishlist_item_id_parser, wishlist_item_post_args)
+    def post(self, **kwargs):
+        """
+        Adds wishlist item to current wishlist with specified id
+        """
+
+        # getting arguments from request body
+        wishlist_id_args = wishlist_item_id_parser.parse_args()
+        if not wishlist_id_args.get("wishlist_id"):
+            raise BadRequest("wishlist_id argument is required")
+
+        wishlist = Wishlist.query.filter_by(id=wishlist_id_args.get("wishlist_id")).first_or_404()
+
+        item_args = wishlist_item_args_parser.parse_args()
+
+        wishlist.items.append(
+            WishlistItem(
+                id=uuid4().hex,
+                text=item_args.get("text"),
+            )
+        )
+
+        db.session.commit()
+        return None, 201

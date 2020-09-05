@@ -49,10 +49,10 @@ def create_app(config=DevelopmentConfig) -> Flask:
     return app
 
 # done # todo add user adding after auth
-# todo A user should be able to create a wishlist and add items.
-# todo A user should be able to edit wishlist.
-# todo A user should be able to observe a list of wishlists.
-# todo A user should be able to see details of any own wishlist.
+# done # todo A user should be able to create a wishlist and add items.
+# done # todo A user should be able to edit wishlist.
+# done # todo A user should be able to observe a list of wishlists.
+# done # todo A user should be able to see details of any own wishlist.
 # todo A user should be able to share any wishlist with other users.
 # todo A user should be able to reserve any item in the shared wishlist.
 # todo add tests

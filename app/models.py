@@ -57,7 +57,6 @@ class Wishlist(db.Model):
         back_populates="wishlist",
         # lazy="dynamic"
     )
-
     items = db.relationship("WishlistItem", backref="wishlist", lazy="joined")
 
 
