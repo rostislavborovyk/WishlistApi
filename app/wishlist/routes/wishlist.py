@@ -81,7 +81,7 @@ class WishlistListResource(Resource):
         user.wishlists.append(a)
         db.session.commit()
 
-        return None, 201
+        return a.wishlist.id, 201
 
 
 @ns.route('/wishlist/<string:id_>')

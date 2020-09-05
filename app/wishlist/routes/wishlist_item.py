@@ -71,15 +71,11 @@ class WishlistItemListResource(Resource):
 
         item_args = wishlist_item_args_parser.parse_args()
 
-        wishlist.items.append(
-            WishlistItem(
-                id=uuid4().hex,
-                text=item_args.get("text"),
-            )
-        )
+        item = WishlistItem(id=uuid4().hex, text=item_args.get("text"))
+        wishlist.items.append(item)
 
         db.session.commit()
-        return None, 201
+        return item.id, 201
 
 
 @ns.route('/wishlist_item/<string:id_>')

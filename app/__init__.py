@@ -43,6 +43,7 @@ def create_app(config=DevelopmentConfig) -> Flask:
     app = Flask(__name__)
     app.config.from_object(config)
 
+    app.app_context().push()
     _register_extensions(app)
     _add_namespaces(api)
     _register_blueprints(app)
