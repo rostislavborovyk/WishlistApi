@@ -6,8 +6,8 @@
 ## Project structure
 
 - Service backend runs with flask and flask-restx framework 
-  * app.wishlist package handles google authentication and creation of users
-  * app.auth package defines all logic related to api
+  * app.wishlist package defines all logic related to api
+  * app.auth package handles google authentication and creation of users
 - Wsgi application runs via gunicorn in docker container
 - Docker container deployed on heroku
 - Postgres database runs separately in heroku
