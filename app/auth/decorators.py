@@ -13,7 +13,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if current_app.config["TESTING"]:
-            session["user_id"] = "108083032719348811654"  # todo set this user id via env vars
+            session["user_id"] = current_app.config["TEST_USER_ID"]  # todo set this user id via env vars
 
         user = dict(session).get('user_id')
         if user:

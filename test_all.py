@@ -6,14 +6,14 @@ from app import create_app, db
 from app.models import User
 
 
-def add_user():
-    u = User(id="108083032719348811654", name="test_name", email="test_email")  # todo replace to id in config
+def add_user(id_):
+    u = User(id=id_, name="test_name", email="test_email")
     db.session.add(u)
     db.session.commit()
 
 
-def remove_user():
-    u = User.query.filter_by(id="108083032719348811654").first()  # todo replace to id in config
+def remove_user(id_):
+    u = User.query.filter_by(id=id_).first()
     db.session.delete(u)
     db.session.commit()
 
@@ -24,10 +24,10 @@ class TestWishlistApi(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
-        add_user()
+        add_user(self.app.config["TEST_USER_ID"])
 
     def tearDown(self) -> None:
-        remove_user()
+        remove_user(self.app.config["TEST_USER_ID"])
         self.app_context.pop()
 
     def test_wishlist(self) -> None:
@@ -57,10 +57,10 @@ class TestWishlistItemApi(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
-        add_user()
+        add_user(self.app.config["TEST_USER_ID"])
 
     def tearDown(self) -> None:
-        remove_user()
+        remove_user(self.app.config["TEST_USER_ID"])
         self.app_context.pop()
 
     def test_wishlist_item(self) -> None:

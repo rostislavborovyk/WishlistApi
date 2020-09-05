@@ -23,3 +23,4 @@ class TestingConfig(Config):
     TESTING = True
     SECRET_KEY = "secret"
     SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://postgres:postgres@localhost:5432/postgres"
+    TEST_USER_ID = "test_user_id"
