@@ -26,3 +26,14 @@ wishlist_item_args_parser.add_argument(
     type=str
 )
 
+share_wishlist_args_parser = RequestParser()
+
+share_wishlist_args_parser.add_argument(
+    "user_id",
+    type=str
+)
+
+share_wishlist_args_parser.add_argument(
+    "wishlist_id",
+    type=str
+)

@@ -53,7 +53,7 @@ def create_app(config=DevelopmentConfig) -> Flask:
 # done  A user should be able to edit wishlist.
 # done  A user should be able to observe a list of wishlists.
 # done  A user should be able to see details of any own wishlist.
-# todo A user should be able to share any wishlist with other users.
+# done A user should be able to share any wishlist with other users.
 # done A user should be able to reserve any item in the shared wishlist.
 # todo add tests
 # todo add docs
