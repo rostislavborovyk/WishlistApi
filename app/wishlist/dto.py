@@ -6,13 +6,13 @@ from typing import List
 
 
 class WishlistItemDto:
-    __slots__ = ["id", "text", "is_reserved", "wishlists_id"]  # for faster creation of objects
+    __slots__ = ["id", "text", "is_reserved", "wishlist_id"]  # for faster creation of objects
 
-    def __init__(self, id_: str, text: str, is_reserved: bool, wishlists_id: str):
+    def __init__(self, id_: str, text: str, is_reserved: bool, wishlist_id: str):
         self.id = id_
         self.text = text
         self.is_reserved = is_reserved
-        self.wishlists_id = wishlists_id
+        self.wishlist_id = wishlist_id
 
 
 class WishListDto:

@@ -21,3 +21,8 @@ wishlist_item_args_parser.add_argument(
     type=str
 )
 
+wishlist_item_args_parser.add_argument(
+    "is_reserved",
+    type=str
+)
+

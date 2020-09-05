@@ -48,12 +48,12 @@ def create_app(config=DevelopmentConfig) -> Flask:
     _register_blueprints(app)
     return app
 
-# done # todo add user adding after auth
-# done # todo A user should be able to create a wishlist and add items.
-# done # todo A user should be able to edit wishlist.
-# done # todo A user should be able to observe a list of wishlists.
-# done # todo A user should be able to see details of any own wishlist.
+# done  add user adding after auth
+# done  A user should be able to create a wishlist and add items.
+# done  A user should be able to edit wishlist.
+# done  A user should be able to observe a list of wishlists.
+# done  A user should be able to see details of any own wishlist.
 # todo A user should be able to share any wishlist with other users.
-# todo A user should be able to reserve any item in the shared wishlist.
+# done A user should be able to reserve any item in the shared wishlist.
 # todo add tests
 # todo add docs

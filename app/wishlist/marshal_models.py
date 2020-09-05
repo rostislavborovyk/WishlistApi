@@ -10,7 +10,7 @@ wishlist_item_get_marshal_model = api.model('Wishlist item', {
     'id': fields.String,
     'text': fields.String,
     'is_reserved': fields.Boolean,
-    'wishlists_id': fields.String,
+    'wishlist_id': fields.String,
 })
 
 wishlist_get_marshal_model = api.model('Wishlist', {
