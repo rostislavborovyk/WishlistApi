@@ -7,4 +7,4 @@ from flask_restx import Namespace
 # assigning type Namespace because mypy don't recognize type
 ns: Namespace = Namespace("api", description="wishlist api v1")
 
-from app.wishlist.routes import *
+from app.wishlist import routes
