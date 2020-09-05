@@ -12,9 +12,18 @@ class AddMixin:
 class DeleteByIdMixin:
     @classmethod
     def delete_by_id(cls, id_: str) -> None:
-        if obj := cls.query.filter_by(id=id_).first():
+        if obj := cls.query.filter_by(id=id_).first_or_404():
             db.session.delete(obj)
             db.session.commit()
+
+
+class UserWishlistAssociation(db.Model):
+    __tablename__ = 'user_wishlist_association'
+    user_id = db.Column(db.String(32), db.ForeignKey('users.id'), primary_key=True)
+    wishlist_id = db.Column(db.String(32), db.ForeignKey('wishlists.id'), primary_key=True)
+
+    wishlist = db.relationship("Wishlist", back_populates="users")
+    user = db.relationship("User", back_populates="wishlists")
 
 
 class User(AddMixin, DeleteByIdMixin, db.Model):
@@ -25,21 +34,30 @@ class User(AddMixin, DeleteByIdMixin, db.Model):
     id = db.Column(db.String(32), primary_key=True)
     name = db.Column(db.String(60))
     email = db.Column(db.String(60))
-    wishlists = db.relationship("Wishlist", backref="user", lazy="joined")
+    wishlists = db.relationship(
+        "UserWishlistAssociation",
+        back_populates="user",
+        # lazy="dynamic"
+    )
 
     @classmethod
     def find_by_id(cls, id_: str) -> Optional[db.Model]:
         return cls.query.filter_by(id=id_).first()
 
 
-class Wishlist(AddMixin, DeleteByIdMixin, db.Model):
+class Wishlist(db.Model):
     __tablename__ = "wishlists"
 
     # id is generated from uuid4
     id = db.Column(db.String(32), primary_key=True)
     name = db.Column(db.String(60))
     add_date = db.Column(db.Date)
-    user_id = db.Column(db.String(32), db.ForeignKey("users.id"))
+    users = db.relationship(
+        "UserWishlistAssociation",
+        back_populates="wishlist",
+        # lazy="dynamic"
+    )
+
     items = db.relationship("WishlistItem", backref="wishlist", lazy="joined")
 
 
@@ -50,4 +68,4 @@ class WishlistItem(AddMixin, db.Model):
     id = db.Column(db.String(32), primary_key=True)
     text = db.Column(db.String(200))
     is_reserved = db.Column(db.Boolean, default=False)
-    wishlists_id = db.Column(db.String(32), db.ForeignKey("wishlists.id"))
+    wishlist_id = db.Column(db.String(32), db.ForeignKey("wishlists.id"))
