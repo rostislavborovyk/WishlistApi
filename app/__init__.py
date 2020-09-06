@@ -4,11 +4,19 @@ This module initializes api object and defines create_app function
 
 from flask import Flask
 from flask_restx import Api
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy as _BaseSQLAlchemy
 from authlib.integrations.flask_client import OAuth
 
 from config import DevelopmentConfig
+
+
+# sqlalchemy config for travis
+class SQLAlchemy(_BaseSQLAlchemy):
+    def apply_pool_defaults(self, app, options):
+        super(SQLAlchemy, self).apply_pool_defaults(app, options)
+        options["pool_pre_ping"] = True
+
 
 api = Api(
     ordered=True,
@@ -48,5 +56,3 @@ def create_app(config=DevelopmentConfig) -> Flask:
     _add_namespaces(api)
     _register_blueprints(app)
     return app
-
-# todo add docs
