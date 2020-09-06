@@ -1,7 +1,8 @@
 import json
 import unittest
-from config import TestingConfig
+from sqlalchemy.exc import DBAPIError
 
+from config import TestingConfig
 from app import create_app, db
 from app.models import User
 
@@ -31,24 +32,27 @@ class TestWishlistApi(unittest.TestCase):
         self.app_context.pop()
 
     def test_wishlist(self) -> None:
-        with self.app.test_client() as c:
-            data = {"name": "test_wishlist"}
-            response = c.post(
-                "/api/wishlist",
-                headers={'Content-Type': 'application/json'},
-                data=json.dumps(data)
-            )
+        try:
+            with self.app.test_client() as c:
+                data = {"name": "test_wishlist"}
+                response = c.post(
+                    "/api/wishlist",
+                    headers={'Content-Type': 'application/json'},
+                    data=json.dumps(data)
+                )
 
-            self.assertEqual(response.status_code, 201)
-            id_ = response.get_data().decode("utf-8").strip("\n").strip("\"")
+                self.assertEqual(response.status_code, 201)
+                id_ = response.get_data().decode("utf-8").strip("\n").strip("\"")
 
-            response = c.get("/api/wishlist")
-            self.assertEqual(response.status_code, 200)
+                response = c.get("/api/wishlist")
+                self.assertEqual(response.status_code, 200)
 
-            response = c.delete(
-                f'/api/wishlist/{id_}',
-            )
-            self.assertEqual(response.status_code, 204)
+                response = c.delete(
+                    f'/api/wishlist/{id_}',
+                )
+                self.assertEqual(response.status_code, 204)
+        except DBAPIError as e:
+            print(e)
 
 
 class TestWishlistItemApi(unittest.TestCase):

@@ -10,6 +10,6 @@ install:
 script:
   - docker run --name pg-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=postgres -p 0.0.0.0:5432:5432/tcp -d postgres
   - pytest
-#  - docker stop pg-db
-#  - docker rm pg-db
+  - docker stop pg-db
+  - docker rm pg-db
 
