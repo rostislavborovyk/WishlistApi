@@ -1,4 +1,5 @@
 # WishlistApi
+[![Build Status](https://travis-ci.com/rostislavborovyk/WishlistApi.svg?token=N6skgBAyq7zSBt2UqUss&branch=master)](https://travis-ci.com/rostislavborovyk/WishlistApi)
 
 ## Database schema
 ![alt text](img/db_schema.png)
