@@ -2,14 +2,34 @@ language: python
 python:
   - "3.8"
 
+services:
+  - postgresql
+
+#sudo: true
+env:
+  global:
+    - PGUSER=postgres
+    - PGPORT=5432
+    - PGPASSWORD=postgres
+
+before_script:
+  - psql -c 'create database postgres' -U postgres
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get --yes remove postgresql\*
+  - sudo apt-get install -y postgresql-11 postgresql-client-11
+  - sudo cp /etc/postgresql/{9.6,11}/main/pg_hba.conf
+  - sudo service postgresql restart 11
+
 install:
   - pip install poetry
   - poetry config virtualenvs.create false
   - poetry install --no-interaction --no-ansi
 
 script:
-  - docker run --name pg-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=postgres -p 0.0.0.0:5432:5432/tcp -d postgres
+#  - docker run --name pg-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=postgres -p 0.0.0.0:5432:5432/tcp -d postgres
   - pytest
-  - docker stop pg-db
-  - docker rm pg-db
+#  - docker stop pg-db
+#  - docker rm pg-db
 
