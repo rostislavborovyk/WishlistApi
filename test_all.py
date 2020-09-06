@@ -32,29 +32,25 @@ class TestWishlistApi(unittest.TestCase):
         self.app_context.pop()
 
     def test_wishlist(self) -> None:
-        try:
-            with self.app.test_client() as c:
-                data = {"name": "test_wishlist"}
-                response = c.post(
-                    "/api/wishlist",
-                    headers={'Content-Type': 'application/json'},
-                    data=json.dumps(data)
-                )
+        with self.app.test_client() as c:
+            data = {"name": "test_wishlist"}
+            response = c.post(
+                "/api/wishlist",
+                headers={'Content-Type': 'application/json'},
+                data=json.dumps(data)
+            )
 
-                self.assertEqual(response.status_code, 201)
-                id_ = response.get_data().decode("utf-8").strip("\n").strip("\"")
+            self.assertEqual(response.status_code, 201)
+            id_ = response.get_data().decode("utf-8").strip("\n").strip("\"")
 
-                response = c.get("/api/wishlist")
-                self.assertEqual(response.status_code, 200)
+            response = c.get("/api/wishlist")
+            self.assertEqual(response.status_code, 200)
 
-                response = c.delete(
-                    f'/api/wishlist/{id_}',
-                )
-                self.assertEqual(response.status_code, 204)
-        # happens in travis in this particular test, idk how to fix
-        except OperationalError as e:
-            self.assertEqual(True, True)
-            print(e)
+            response = c.delete(
+                f'/api/wishlist/{id_}',
+            )
+            self.assertEqual(response.status_code, 204)
+
 
 
 class TestWishlistItemApi(unittest.TestCase):
