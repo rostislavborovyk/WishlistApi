@@ -3,6 +3,17 @@
 ## Database schema
 ![alt text](img/db_schema.png)
 
+- Schema consists of 3 entity tables: users, wishlists and wishlist_items
+- user_wishlist_association table is for many to many relation between users and wishlists
+
+## Functional description
+- User can log in via google account
+- User can add wishlist 
+- When logged in user fetches the all wishlists he gets only wishlists which belong to him
+- User can share any wishlist which belongs to current logged in user with other user
+- User can add wishlist_items to specific wishlist
+- User can set is_reserved flag in any wishlist_item which will prevent this item from deleting
+
 ## Project structure
 
 - Service backend runs with flask and flask-restx framework 
