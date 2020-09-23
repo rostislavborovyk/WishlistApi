@@ -9,7 +9,7 @@
 ## Functional description
 - User can log in via google account
 - User can add wishlist 
-- When logged in user fetches the all wishlists he gets only wishlists which belong to him
+- When logged in user fetches all wishlists he gets only wishlists which belong to him
 - User can share any wishlist which belongs to current logged in user with other user
 - User can add wishlist_items to specific wishlist
 - User can set is_reserved flag in any wishlist_item which will prevent this item from deleting
